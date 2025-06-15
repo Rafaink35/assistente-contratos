@@ -32,7 +32,7 @@ with st.form("upload_form"):
     submitted = st.form_submit_button("🔄 Processar documento")
 
 def build_chain(file, api_key: str):
-    with st.spinner("🔧 Processando documento…"):
+    with st.spinner("🔧 Processando documento com embeddings leves…"):
         suffix = Path(file.name).suffix
 
         if file.size > 50_000_000:
@@ -52,7 +52,7 @@ def build_chain(file, api_key: str):
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
         chunks = splitter.split_documents(docs)
 
-        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+        embeddings = HuggingFaceEmbeddings(model_name="intfloat/e5-small")
         vectordb = FAISS.from_documents(chunks, embeddings)
 
         memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
